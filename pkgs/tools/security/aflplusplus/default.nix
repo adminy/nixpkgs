@@ -14,6 +14,7 @@
   perl,
   gmp,
   file,
+  fetchpatch,
   wine ? null,
   cmocka,
   llvmPackages,
@@ -37,14 +38,22 @@ let
   libtokencap = callPackage ./libtokencap.nix { inherit aflplusplus; };
   aflplusplus = stdenvNoCC.mkDerivation rec {
     pname = "aflplusplus";
-    version = "4.21c";
+    version = "4.30c";
 
     src = fetchFromGitHub {
       owner = "AFLplusplus";
       repo = "AFLplusplus";
       tag = "v${version}";
-      hash = "sha256-DKwPRxSO+JEJYWLldnfrAYqzwqukNzrbo4R5FzJqzzg=";
+      hash = "sha256-ejadCNmeMDRt/T1hGMdoMS+rfocdx8Q7vuh8/oLzt9I=";
     };
+
+    patches = [
+      # Fixes the gcc_plugin instrumentlist test.
+      (fetchpatch {
+        url = "https://github.com/AFLplusplus/AFLplusplus/commit/f2f417325f25de83bb149c178d36e00631e3d4bb.patch";
+        hash = "sha256-BKQ2NpAUUBo/L80yfSEMVM7drFWK8Q0uYz1PWqflrcE=";
+      })
+    ];
 
     enableParallelBuilding = true;
 
